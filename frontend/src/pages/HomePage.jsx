@@ -1,7 +1,52 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [loginData, setLoginData] = useState({ username: "", password: "" });
+  const [registerData, setRegisterData] = useState({ username: "", password: "" });
+
+  const handleBookClick = (e) => {
+    e.preventDefault();
+    setShowLogin(true);
+  };
+
+  const handleRegisterClick = () => {
+    setShowRegister(true);
+  };
+
+  const handleLogin = async () => {
+    const res = await fetch("http://localhost:8081/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(loginData),
+    });
+    if (res.ok) {
+      const { token } = await res.json();
+      localStorage.setItem("token", token);
+      setShowLogin(false);
+      navigate("/bookings");
+    } else {
+      alert("Invalid credentials");
+    }
+  };
+
+  const handleRegister = async () => {
+    const res = await fetch("http://localhost:8081/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(registerData),
+    });
+    if (res.ok) {
+      alert("Registration successful! You can now login.");
+      setShowRegister(false);
+    } else {
+      alert("Registration failed. Try a different username.");
+    }
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.contentWrapper}>
@@ -15,7 +60,10 @@ const HomePage = () => {
           <p style={styles.paragraph}>
             Every year, 600+ curious minds come here to explore various events, meet friendly people, and enjoy great time and learnings together.
           </p>
-          <Link to="/bookings" style={styles.button}>🎟️ Book Ticket</Link>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button style={styles.button} onClick={handleBookClick}>🎟️ Book Ticket</button>
+            <button style={styles.button} onClick={handleRegisterClick}>📝 Register</button>
+          </div>
         </div>
 
         {/* Right Section */}
@@ -25,8 +73,6 @@ const HomePage = () => {
             alt="Event Ticket"
             style={styles.image}
           />
-
-          {/* Moved Contact Info */}
           <div style={styles.contactBox}>
             <p style={styles.contactLine}><strong>For further enquiries contact:</strong></p>
             <p style={styles.contactLine}>📧 Gmail: <a href="mailto:eventzen@gmail.com" style={styles.link}>eventzen@gmail.com</a></p>
@@ -34,10 +80,65 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Login Popup */}
+      {showLogin && (
+        <div style={popupStyles.overlay}>
+          <div style={popupStyles.modal}>
+            <h2>Please Log In</h2>
+            <input
+              type="text"
+              placeholder="Username"
+              value={loginData.username}
+              onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
+              style={popupStyles.input}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={loginData.password}
+              onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+              style={popupStyles.input}
+            />
+            <div style={popupStyles.btnRow}>
+              <button onClick={handleLogin} style={popupStyles.loginBtn}>Login</button>
+              <button onClick={() => setShowLogin(false)} style={popupStyles.cancelBtn}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Register Popup */}
+      {showRegister && (
+        <div style={popupStyles.overlay}>
+          <div style={popupStyles.modal}>
+            <h2>Create an Account</h2>
+            <input
+              type="text"
+              placeholder="Username"
+              value={registerData.username}
+              onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
+              style={popupStyles.input}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={registerData.password}
+              onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+              style={popupStyles.input}
+            />
+            <div style={popupStyles.btnRow}>
+              <button onClick={handleRegister} style={popupStyles.loginBtn}>Register</button>
+              <button onClick={() => setShowRegister(false)} style={popupStyles.cancelBtn}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
+// ✅ Styles remain untouched
 const styles = {
   container: {
     width: "100%",
@@ -87,7 +188,8 @@ const styles = {
     borderRadius: "8px",
     display: "inline-block",
     boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-    transition: "all 0.3s ease"
+    transition: "all 0.3s ease",
+    cursor: "pointer"
   },
   rightSection: {
     flex: "1 1 500px",
@@ -121,6 +223,54 @@ const styles = {
   link: {
     color: "#0056b3",
     textDecoration: "none"
+  }
+};
+
+// Modal styles
+const popupStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0, left: 0,
+    width: "100%", height: "100%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    zIndex: 999
+  },
+  modal: {
+    backgroundColor: "white",
+    padding: 30,
+    borderRadius: 10,
+    minWidth: 300,
+    boxShadow: "0 0 15px rgba(0,0,0,0.3)",
+    textAlign: "center"
+  },
+  input: {
+    width: "100%",
+    margin: "10px 0",
+    padding: "10px",
+    borderRadius: 5,
+    border: "1px solid #ccc"
+  },
+  btnRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: 15
+  },
+  loginBtn: {
+    padding: "10px 20px",
+    backgroundColor: "#4caf50",
+    color: "white",
+    border: "none",
+    borderRadius: 5,
+    cursor: "pointer"
+  },
+  cancelBtn: {
+    padding: "10px 20px",
+    backgroundColor: "#f44336",
+    color: "white",
+    border: "none",
+    borderRadius: 5,
+    cursor: "pointer"
   }
 };
 
