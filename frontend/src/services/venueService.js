@@ -37,13 +37,3 @@ export const deleteVenue = async (venueId) => {
     console.error("Error deleting venue:", error);
   }
 };
-
-// ✅ Fix bookVenue API Request: Now uses venue_id in URL
-export const bookVenue = async (venueId, eventId) => {
-  try {
-    const response = await axios.post(`${API_URL}/${venueId}/book`, { event_id: eventId });
-    return response.data;
-  } catch (error) {
-    console.error("Error booking venue:", error);
-  }
-};

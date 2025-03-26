@@ -1,8 +1,16 @@
 const Venue = require("../models/Venue");
+const Event = require("../models/Event");
 
 const getAllVenues = async (req, res) => {
   try {
-    const venues = await Venue.findAll();
+    const venues = await Venue.findAll({
+      attributes: ["id", "name", "location", "capacity", "amenities", "price_per_hour", "status"],
+      include: [{
+        model: Event,
+        as: "event",
+        attributes: ["id", "name"]
+      }]
+    });
     res.status(200).json(venues);
   } catch (error) {
     res.status(500).json({ message: "Error fetching venues", error });
@@ -24,12 +32,7 @@ const createVenue = async (req, res) => {
     const { name, location, capacity, amenities, price_per_hour } = req.body;
 
     const venue = await Venue.create({
-      name,
-      location,
-      capacity,
-      amenities,
-      price_per_hour,
-      status: "Available" // ✅ Default Status
+      name, location, capacity, amenities, price_per_hour, status: "Available"
     });
 
     res.status(201).json(venue);
@@ -62,7 +65,6 @@ const deleteVenue = async (req, res) => {
   }
 };
 
-// ✅ Improved Booking Logic
 const bookVenue = async (req, res) => {
   try {
     const venue = await Venue.findByPk(req.params.id);
@@ -72,12 +74,18 @@ const bookVenue = async (req, res) => {
       return res.status(400).json({ message: "Venue is already booked!" });
     }
 
-    await venue.update({ status: "Booked", booked_for_event: req.body.event_id });
-
+    await venue.update({ status: "Booked" });
     res.status(200).json({ message: "Venue booked successfully!", venue });
   } catch (error) {
     res.status(500).json({ message: "Error booking venue", error });
   }
 };
 
-module.exports = { getAllVenues, getVenueById, createVenue, updateVenue, deleteVenue, bookVenue };
+module.exports = {
+  getAllVenues,
+  getVenueById,
+  createVenue,
+  updateVenue,
+  deleteVenue,
+  bookVenue
+};

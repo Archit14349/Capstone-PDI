@@ -37,3 +37,13 @@ export const deleteEvent = async (eventId) => {
     console.error("Error deleting event:", error);
   }
 };
+
+export const assignVenueToEvent = async (eventId, venueId) => {
+  try {
+    const response = await axios.put(`${API_URL}/assign-venue`, { eventId, venueId });
+    return response.data;
+  } catch (error) {
+    console.error("Error assigning venue:", error.response?.data || error.message);
+  }
+};
+

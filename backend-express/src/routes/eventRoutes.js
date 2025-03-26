@@ -1,11 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { getAllEvents, getEventById, createEvent, updateEvent, deleteEvent } = require("../controllers/eventController");
+const eventController = require("../controllers/eventController");
 
-router.get("/", getAllEvents);
-router.get("/:id", getEventById);
-router.post("/", createEvent);
-router.put("/:id", updateEvent);
-router.delete("/:id", deleteEvent);
+// 🔥 Always put static paths first before dynamic ones
+router.put("/assign-venue", eventController.assignVenueToEvent); // ✅ this first!
+
+router.get("/", eventController.getAllEvents);
+router.get("/:id", eventController.getEventById);
+router.post("/", eventController.createEvent);
+router.put("/:id", eventController.updateEvent);
+router.delete("/:id", eventController.deleteEvent);
 
 module.exports = router;

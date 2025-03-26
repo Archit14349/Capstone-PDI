@@ -1,118 +1,224 @@
 import React, { useEffect, useState } from "react";
-import { getVenues, createVenue, updateVenue, deleteVenue, bookVenue } from "../services/venueService";
+import { getVenues, createVenue, updateVenue, deleteVenue } from "../services/venueService";
+import { getEvents, assignVenueToEvent } from "../services/eventService";
 
 const VenuesPage = () => {
   const [venues, setVenues] = useState([]);
+  const [events, setEvents] = useState([]);
   const [formData, setFormData] = useState({
     name: "", location: "", capacity: "", amenities: "", price_per_hour: ""
   });
 
   useEffect(() => {
     fetchVenues();
+    fetchEvents();
   }, []);
 
   const fetchVenues = async () => {
-    const data = await getVenues();
-    setVenues(data);
+    try {
+      const data = await getVenues();
+      setVenues(data);
+    } catch (err) {
+      console.error("Error fetching venues:", err);
+    }
+  };
+
+  const fetchEvents = async () => {
+    try {
+      const data = await getEvents();
+      setEvents(data);
+    } catch (err) {
+      console.error("Error fetching events:", err);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.id) {
-      await updateVenue(formData.id, formData);
-    } else {
-      await createVenue(formData);
-    }
+    formData.id
+      ? await updateVenue(formData.id, formData)
+      : await createVenue(formData);
     setFormData({ name: "", location: "", capacity: "", amenities: "", price_per_hour: "" });
     fetchVenues();
   };
 
-  const handleBook = async (venueId) => {
-    await bookVenue(venueId, 1); // Assume Event ID = 1
-    fetchVenues();
+  const handleAssign = async (venueId, eventId) => {
+    if (!eventId) return;
+    await assignVenueToEvent(eventId, venueId);
+    alert(`✅ Venue assigned to event (ID: ${eventId})`);
+    await fetchVenues();
+  };
+
+  const handleDeleteVenue = async (venueId) => {
+    if (window.confirm("Are you sure you want to delete this venue?")) {
+      try {
+        await deleteVenue(venueId);
+        alert("Venue deleted successfully");
+        fetchVenues();
+      } catch (err) {
+        alert("Error deleting venue");
+        console.error(err);
+      }
+    }
   };
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Venue Management</h1>
+      <h1 style={styles.title}>🏛️ Venue Management</h1>
 
-      {/* Venue Form */}
       <form onSubmit={handleSubmit} style={styles.form}>
-        <input type="text" placeholder="Venue Name" value={formData.name} 
+        <input type="text" placeholder="Venue Name" value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
-
-        <input type="text" placeholder="Location" value={formData.location} 
+        <input type="text" placeholder="Location" value={formData.location}
           onChange={(e) => setFormData({ ...formData, location: e.target.value })} required />
-
-        <input type="number" placeholder="Capacity" value={formData.capacity} 
+        <input type="number" placeholder="Capacity" value={formData.capacity}
           onChange={(e) => setFormData({ ...formData, capacity: e.target.value })} required />
-
-        <input type="text" placeholder="Amenities" value={formData.amenities} 
+        <input type="text" placeholder="Amenities" value={formData.amenities}
           onChange={(e) => setFormData({ ...formData, amenities: e.target.value })} required />
-
-        <input type="number" placeholder="Price per Hour ($)" value={formData.price_per_hour} 
+        <input type="number" placeholder="Price per Hour ($)" value={formData.price_per_hour}
           onChange={(e) => setFormData({ ...formData, price_per_hour: e.target.value })} required />
-
-        <button type="submit" style={styles.button}>Save Venue</button>
+        <button type="submit" style={styles.saveButton}>💾 Save Venue</button>
       </form>
 
-      {/* Venue List */}
-      <ul style={styles.venueList}>
-        {venues.map(venue => (
-          <li key={venue.id} style={styles.venueCard}>
-            <strong>{venue.name}</strong> - {venue.location} - {venue.capacity} seats - 
-            <span style={styles.price}> ${venue.price_per_hour}/hr </span>
-            <span style={venue.status === "Booked" ? styles.bookedStatus : styles.availableStatus}>
-              [{venue.status === "Booked" ? "Status: Booked" : "Status: Available"}]
-            </span>
-            {venue.status !== "Booked" && (
-              <button onClick={() => handleBook(venue.id)} style={styles.bookButton}>Book</button>
-            )}
-          </li>
+      <div style={styles.venueList}>
+        {venues.map((venue) => (
+          <div key={venue.id} style={styles.venueCard}>
+            <div style={styles.venueInfo}>
+              <p style={styles.venueName}>{venue.name}</p>
+              <p style={styles.meta}>
+                📍 {venue.location} | 🧾 Amenities: {venue.amenities} | 🪑 {venue.capacity} seats | 💵 
+                <span style={styles.price}> ${venue.price_per_hour}/hr</span>
+              </p>
+
+              {venue.status === "Booked" ? (
+                <p style={styles.bookedStatus}>
+                  🔒 <strong>Status:</strong> <span style={{ color: "#dc3545" }}>Booked</span>
+                  {venue.event?.name && (
+                    <span style={{ marginLeft: "10px", color: "#333" }}>
+                      → {venue.event.name}
+                    </span>
+                  )}
+                </p>
+              ) : (
+                <div style={styles.availableSection}>
+                  <span style={styles.availableStatus}>🟢 Available</span>
+                  <select onChange={(e) => handleAssign(venue.id, e.target.value)} defaultValue="">
+                    <option value="" disabled>Assign to Event</option>
+                    {events.map(event => (
+                      <option key={event.id} value={event.id}>{event.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => handleDeleteVenue(venue.id)}
+              style={styles.deleteBtn}
+              disabled={venue.status === "Booked"}
+              title={venue.status === "Booked" ? "Unassign event first" : "Delete venue"}
+            >
+              🗑️ Delete
+            </button>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
 
-/** ✅ Improved Styles for 90% Zoom & Proper Alignment */
 const styles = {
   container: {
-    maxWidth: "85%", margin: "0 auto", padding: "20px",
-    fontFamily: "Arial, sans-serif"
+    padding: "2rem",
+    fontFamily: "Segoe UI, sans-serif",
+    background: "#f1f7ff",
+    minHeight: "100vh"
   },
   title: {
-    fontSize: "32px", textAlign: "center", color: "#1a1a1a", fontWeight: "bold", marginBottom: "20px"
+    textAlign: "center",
+    fontSize: "32px",
+    marginBottom: "2rem",
+    color: "#002B5B"
   },
   form: {
-    display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "10px", padding: "20px", maxWidth: "800px", margin: "0 auto", backgroundColor: "#f9f9f9",
-    borderRadius: "10px", boxShadow: "0px 4px 6px rgba(0,0,0,0.1)"
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "1rem",
+    background: "#fff",
+    padding: "1.5rem",
+    borderRadius: "12px",
+    maxWidth: "1000px",
+    margin: "0 auto 30px auto",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
   },
-  button: {
-    backgroundColor: "#007bff", color: "white", padding: "12px", border: "none",
-    borderRadius: "5px", cursor: "pointer", textAlign: "center", width: "100%", fontSize: "16px"
+  saveButton: {
+    gridColumn: "1/-1",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    padding: "12px",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold"
   },
   venueList: {
-    listStyle: "none", padding: 0, marginTop: "20px"
+    maxWidth: "1000px",
+    margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem"
   },
   venueCard: {
-    backgroundColor: "#ffffff", padding: "15px", borderRadius: "10px", boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
-    display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px",
-    fontSize: "18px", fontWeight: "bold"
+    background: "#ffffff",
+    padding: "1rem 1.5rem",
+    borderRadius: "10px",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap"
+  },
+  venueInfo: {
+    flex: 1,
+    minWidth: "300px"
+  },
+  venueName: {
+    fontSize: "20px",
+    fontWeight: "bold",
+    marginBottom: "5px"
+  },
+  meta: {
+    fontSize: "14px",
+    color: "#333"
   },
   price: {
-    color: "#28a745", fontWeight: "bold"
+    color: "#28a745",
+    fontWeight: "bold",
+    marginLeft: "5px"
   },
   bookedStatus: {
-    color: "red", fontWeight: "bold", marginLeft: "10px"
+    marginTop: "10px",
+    fontWeight: "500",
+    fontSize: "15px"
+  },
+  availableSection: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
   },
   availableStatus: {
-    color: "green", fontWeight: "bold", marginLeft: "10px"
+    color: "#28a745",
+    fontWeight: "bold"
   },
-  bookButton: {
-    backgroundColor: "#28a745", color: "white", padding: "8px 12px", borderRadius: "5px",
-    cursor: "pointer", fontSize: "14px", border: "none"
+  deleteBtn: {
+    backgroundColor: "#dc3545",
+    color: "#fff",
+    padding: "10px 16px",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    marginTop: "10px"
   }
 };
 

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getDashboardStats, getBookings } from "../services/adminService";
+import "../styles/AdminDashboard.css";
+
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({});
@@ -11,22 +13,43 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
-      <h2>Statistics</h2>
-      <p>Total Bookings: {stats.totalBookings}</p>
-      <p>Total Revenue: ${stats.totalRevenue}</p>
-      <p>Total Expenses: ${stats.totalExpenses}</p>
-      <p>Total Events: {stats.totalEvents}</p>
+    <div className="admin-dashboard">
+      <h1 className="dashboard-title">📊 Admin Dashboard</h1>
 
-      <h2>Recent Bookings</h2>
-      <ul>
-        {bookings.map(booking => (
-          <li key={booking.id}>
-            Customer {booking.customerId} booked {booking.numTickets} tickets for event {booking.eventId}
-          </li>
-        ))}
-      </ul>
+      <div className="dashboard-cards">
+        <div className="card">
+          <p>Total Bookings</p>
+          <h2>{stats.totalBookings ?? 0}</h2>
+        </div>
+        <div className="card">
+          <p>Total Revenue</p>
+          <h2>${stats.totalRevenue ?? 0}</h2>
+        </div>
+        <div className="card">
+          <p>Total Expenses</p>
+          <h2>${stats.totalExpenses ?? 0}</h2>
+        </div>
+        <div className="card">
+          <p>Total Events</p>
+          <h2>{stats.totalEvents ?? 0}</h2>
+        </div>
+      </div>
+
+      <div className="recent-bookings">
+        <h2>🕒 Recent Bookings</h2>
+        <ul>
+          {bookings.length === 0 ? (
+            <li>No bookings found.</li>
+          ) : (
+            bookings.map((booking) => (
+              <li key={booking.id}>
+  🎟 <strong>{booking.num_tickets}</strong> ticket(s) booked for <em>Event</em> — <strong>${booking.total_price}</strong>
+</li>
+
+            ))
+          )}
+        </ul>
+      </div>
     </div>
   );
 };

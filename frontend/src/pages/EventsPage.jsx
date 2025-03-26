@@ -37,18 +37,17 @@ const EventsPage = () => {
   };
 
   return (
-    <div style={styles.pageContainer}>
-      <h1 style={styles.mainTitle}>Event Management</h1>
+    <div style={styles.page}>
+      <h1 style={styles.heading}>🎉 Event Management</h1>
 
-      {/* Create / Update Event Form */}
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>Create / Update Event</h2>
+      <div style={styles.formSection}>
+        <h2 style={styles.subHeading}>Create / Update Event</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
           <input type="text" placeholder="Event Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
-          <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows="3"></textarea>
+          <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows="3" />
           <input type="datetime-local" value={formData.date_time} onChange={(e) => setFormData({ ...formData, date_time: e.target.value })} required />
           <input type="text" placeholder="Venue ID" value={formData.venue_id} onChange={(e) => setFormData({ ...formData, venue_id: e.target.value })} required />
-
+          
           <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} required>
             <option value="">Select Category</option>
             <option value="Conference">Conference</option>
@@ -58,32 +57,30 @@ const EventsPage = () => {
           </select>
 
           <input type="text" placeholder="Theme" value={formData.theme} onChange={(e) => setFormData({ ...formData, theme: e.target.value })} required />
-          <input type="number" placeholder="Capacity (10-1000)" value={formData.capacity}
-            onChange={(e) => setFormData({ ...formData, capacity: Math.max(10, Math.min(1000, e.target.value)) })} required />
+          <input type="number" placeholder="Capacity (10-1000)" value={formData.capacity} onChange={(e) => setFormData({ ...formData, capacity: Math.max(10, Math.min(1000, e.target.value)) })} required />
           <input type="number" placeholder="Price" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required />
-          <button type="submit" style={styles.createButton}>{formData.id ? "Update Event" : "Create Event"}</button>
+          <button type="submit" style={styles.primaryButton}>{formData.id ? "Update Event" : "Create Event"}</button>
         </form>
       </div>
 
-      {/* Upcoming Events List */}
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>Upcoming Events</h2>
-        <div style={styles.eventList}>
+      <div style={styles.listSection}>
+        <h2 style={styles.subHeading}>📅 Upcoming Events</h2>
+        <div style={styles.eventGrid}>
           {events.length === 0 ? (
-            <p style={styles.noEvents}>No events available</p>
+            <p style={styles.emptyText}>No events available</p>
           ) : (
             events.map(event => (
-              <div key={event.id} style={styles.eventCard}>
-                <h3 style={styles.eventTitle}>{event.name}</h3>
+              <div key={event.id} style={styles.card}>
+                <h3 style={styles.cardTitle}>{event.name}</h3>
                 <p>{event.description}</p>
                 <p><strong>Date:</strong> {new Date(event.date_time).toLocaleString()}</p>
                 <p><strong>Category:</strong> {event.category}</p>
                 <p><strong>Theme:</strong> {event.theme}</p>
                 <p><strong>Capacity:</strong> {event.capacity}</p>
                 <p><strong>Price:</strong> ${event.price}</p>
-                <div style={styles.buttonContainer}>
-                  <button style={styles.editButton} onClick={() => handleEdit(event)}>Edit</button>
-                  <button style={styles.deleteButton} onClick={() => handleDelete(event.id)}>Delete</button>
+                <div style={styles.buttonGroup}>
+                  <button onClick={() => handleEdit(event)} style={styles.editBtn}>Edit</button>
+                  <button onClick={() => handleDelete(event.id)} style={styles.deleteBtn}>Delete</button>
                 </div>
               </div>
             ))
@@ -94,47 +91,93 @@ const EventsPage = () => {
   );
 };
 
-/** ✅ Improved CSS for 100% Zoom & Better Layout */
 const styles = {
-  pageContainer: { 
-    maxWidth: "90%", margin: "0 auto", padding: "20px", fontFamily: "Arial, sans-serif"
+  page: {
+    fontFamily: "Segoe UI, sans-serif",
+    background: "linear-gradient(to right, #e3f2fd, #f1f8e9)",
+    padding: "2rem",
+    minHeight: "100vh"
   },
-  mainTitle: { 
-    fontSize: "36px", textAlign: "center", marginBottom: "20px", color: "#333"
+  heading: {
+    fontSize: "2.5rem",
+    textAlign: "center",
+    color: "#0d47a1",
+    marginBottom: "2rem"
   },
-  section: { 
-    marginBottom: "40px", padding: "20px", borderRadius: "10px", backgroundColor: "#f8f9fa"
+  formSection: {
+    background: "#ffffff",
+    padding: "2rem",
+    borderRadius: "12px",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+    maxWidth: "700px",
+    margin: "0 auto 3rem auto"
   },
-  sectionTitle: { 
-    fontSize: "24px", marginBottom: "15px", textAlign: "center", color: "#0056b3"
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem"
   },
-  form: { 
-    display: "grid", gap: "10px", padding: "10px", maxWidth: "600px", margin: "0 auto"
+  subHeading: {
+    textAlign: "center",
+    fontSize: "1.5rem",
+    marginBottom: "1rem",
+    color: "#1976d2"
   },
-  eventList: { 
-    display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px"
+  primaryButton: {
+    padding: "0.75rem",
+    backgroundColor: "#43a047",
+    color: "white",
+    fontSize: "1rem",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer"
   },
-  eventCard: { 
-    backgroundColor: "#fff", padding: "20px", borderRadius: "10px", boxShadow: "0px 4px 8px rgba(0,0,0,0.1)", transition: "transform 0.3s"
+  listSection: {
+    paddingTop: "1rem"
   },
-  eventCardHover: { transform: "scale(1.05)" },
-  eventTitle: { 
-    fontSize: "22px", color: "#007bff", marginBottom: "10px"
+  eventGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gap: "1.5rem"
   },
-  createButton: { 
-    backgroundColor: "#28a745", color: "white", padding: "12px", cursor: "pointer", borderRadius: "5px", border: "none", width: "100%", fontSize: "16px"
+  card: {
+    backgroundColor: "#ffffff",
+    padding: "1.5rem",
+    borderRadius: "12px",
+    boxShadow: "0px 4px 12px rgba(0,0,0,0.08)",
+    transition: "transform 0.2s ease",
+    cursor: "default"
   },
-  buttonContainer: { 
-    display: "flex", justifyContent: "space-between", marginTop: "10px"
+  cardTitle: {
+    color: "#1565c0",
+    fontSize: "1.3rem",
+    marginBottom: "0.5rem"
   },
-  editButton: { 
-    backgroundColor: "#007bff", color: "white", padding: "10px", cursor: "pointer", borderRadius: "5px", width: "48%", fontSize: "14px"
+  buttonGroup: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "1rem"
   },
-  deleteButton: { 
-    backgroundColor: "red", color: "white", padding: "10px", cursor: "pointer", borderRadius: "5px", width: "48%", fontSize: "14px"
+  editBtn: {
+    backgroundColor: "#1e88e5",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    padding: "0.5rem 1rem",
+    cursor: "pointer"
   },
-  noEvents: { 
-    textAlign: "center", fontSize: "18px", color: "#555"
+  deleteBtn: {
+    backgroundColor: "#e53935",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    padding: "0.5rem 1rem",
+    cursor: "pointer"
+  },
+  emptyText: {
+    textAlign: "center",
+    color: "#666",
+    fontSize: "1.1rem"
   }
 };
 

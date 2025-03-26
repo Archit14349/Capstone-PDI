@@ -2,11 +2,27 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
 const Budget = sequelize.define("Budget", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  event_id: { type: DataTypes.INTEGER, allowNull: false },
-  total_budget: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-  expenses: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-  revenue: { type: DataTypes.DECIMAL(10, 2), allowNull: false }
+  event_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    references: {
+      model: "Events", // string ref avoids circular require
+      key: "id"
+    },
+    onDelete: "CASCADE"
+  },
+  estimated_budget: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  },
+  actual_expense: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  }
+}, {
+  tableName: "Budgets",
+  timestamps: false
 });
 
 module.exports = Budget;

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+
 import HomePage from "./pages/HomePage";
 import EventsPage from "./pages/EventsPage";
 import VenuePage from "./pages/VenuePage";
@@ -8,66 +9,63 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AttendeesPage from "./pages/AttendeesPage";
 import BudgetPage from "./pages/BudgetPage";
 import VendorsPage from "./pages/VendorsPage";
+import AboutPage from "./pages/AboutPage";
+import NewsPage from "./pages/NewsPage";
+import PrivacyPage from "./pages/PrivacyPage";
+
+import "./styles/Navbar.css";
 
 const App = () => {
+  const [showDropdown, setShowDropdown] = useState(false);
+
   return (
     <Router>
-      <nav style={styles.navbar}>
-        <h2 style={styles.logo}>EventZen</h2>
-        <div style={styles.links}>
-          <Link to="/" style={styles.link}>Home</Link>
-          <Link to="/events" style={styles.link}>Events</Link>
-          <Link to="/venues" style={styles.link}>Venues</Link>
-          <Link to="/attendees" style={styles.link}>Attendees</Link>
-          <Link to="/bookings" style={styles.link}>Bookings</Link>
-          <Link to="/vendors" style={styles.link}>Vendors</Link>
-          <Link to="/budget" style={styles.link}>Budget</Link>
-          <Link to="/admin" style={styles.link}>Admin</Link>
+      {/* Unified Top Navbar */}
+      <nav className="navbar">
+        <div className="logo">EventZen</div>
+
+        <div className="nav-links">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/about" className="nav-link">About Us</Link>
+          <Link to="/news" className="nav-link">News</Link>
+          <Link to="/privacy" className="nav-link">Privacy Policy</Link>
+          <Link to="/bookings" className="nav-link primary-btn">Booking Open !!</Link>
+        </div>
+
+        <div className="admin-dropdown">
+          <button onClick={() => setShowDropdown(!showDropdown)} className="admin-btn">
+            Team Admin ⬇
+          </button>
+          {showDropdown && (
+            <div className="dropdown-menu">
+              <Link to="/events">Events</Link>
+              <Link to="/venues">Venues</Link>
+              <Link to="/attendees">Attendees</Link>
+              <Link to="/vendors">Vendors</Link>
+              <Link to="/budget">Budget</Link>
+              <Link to="/admin">Admin</Link>
+            </div>
+          )}
         </div>
       </nav>
 
-      <div style={styles.container}>
+      <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/bookings" element={<BookingPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/venues" element={<VenuePage />} />
-          <Route path="/bookings" element={<BookingPage />} />
           <Route path="/attendees" element={<AttendeesPage />} />
           <Route path="/vendors" element={<VendorsPage />} />
           <Route path="/budget" element={<BudgetPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
         </Routes>
       </div>
     </Router>
   );
-};
-
-// 🔹 Styling
-const styles = {
-  navbar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "15px 40px",
-    background: "#004d66",
-    color: "white",
-    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-  },
-  logo: { margin: 0, fontSize: "22px", fontWeight: "bold" },
-  links: { display: "flex", gap: "20px" },
-  link: {
-    color: "white",
-    textDecoration: "none",
-    fontSize: "18px",
-    padding: "10px 15px",
-    borderRadius: "5px",
-    transition: "background 0.3s",
-  },
-  container: {
-    padding: "20px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  }
 };
 
 export default App;
