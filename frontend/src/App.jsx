@@ -46,7 +46,7 @@ const AppContent = () => {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
 
   const handleBookingOpenClick = () => {
-    setShowLogin(true); // Always show login for booking
+    setShowLogin(true); 
   };
 
   const handleLogin = async () => {
@@ -125,7 +125,7 @@ const AppContent = () => {
         </nav>
       )}
 
-      {/* 🔐 Booking Login Modal */}
+      {/*  Booking Login Modal */}
       {showLogin && (
         <div style={popupStyles.overlay}>
           <div style={popupStyles.modal}>
@@ -152,7 +152,7 @@ const AppContent = () => {
         </div>
       )}
 
-      {/* 🔐 Admin Login Modal */}
+      {/*  Admin Login Modal */}
       {showAdminLogin && (
         <div style={popupStyles.overlay}>
           <div style={popupStyles.modal}>

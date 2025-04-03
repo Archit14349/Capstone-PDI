@@ -30,7 +30,6 @@ export const registerForEvent = async (attendeeId, eventId) => {
   }
 };
 
-// ✅ Add deleteAttendee function here
 export const deleteAttendee = async (attendeeId) => {
   try {
     await axios.delete(`${API_URL}/${attendeeId}`);

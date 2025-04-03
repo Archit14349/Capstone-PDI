@@ -38,7 +38,7 @@ const EventsPage = () => {
 
   return (
     <div style={styles.page}>
-      <h1 style={styles.heading}>🎉 Event Management</h1>
+      <h1 style={styles.heading}> Event Management</h1>
 
       <div style={styles.formSection}>
         <h2 style={styles.subHeading}>Create / Update Event</h2>

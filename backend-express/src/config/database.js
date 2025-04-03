@@ -8,12 +8,12 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST || "localhost",
     dialect: "mysql",
-    logging: false, // ✅ Disable logging for cleaner output
+    logging: false, 
   }
 );
 
 sequelize.authenticate()
-  .then(() => console.log("✅ Connected to MySQL successfully"))
-  .catch(err => console.error("❌ MySQL connection error:", err));
+  .then(() => console.log(" Connected to MySQL successfully"))
+  .catch(err => console.error(" MySQL connection error:", err));
 
 module.exports = sequelize;

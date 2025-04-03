@@ -7,7 +7,7 @@ const Budget = sequelize.define("Budget", {
     allowNull: false,
     primaryKey: true,
     references: {
-      model: "Events", // string ref avoids circular require
+      model: "Events", 
       key: "id"
     },
     onDelete: "CASCADE"

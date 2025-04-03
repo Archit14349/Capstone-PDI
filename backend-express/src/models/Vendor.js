@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
-const Event = require("./Event"); // This is important!
+const Event = require("./Event"); 
 
 const Vendor = sequelize.define("Vendor", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -11,7 +11,7 @@ const Vendor = sequelize.define("Vendor", {
   event_id: { type: DataTypes.INTEGER.UNSIGNED, allowNull: true }
 });
 
-// ✅ Define the relationship ONCE here
+
 Vendor.belongsTo(Event, { foreignKey: "event_id", as: "event" });
 
 module.exports = Vendor;

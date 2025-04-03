@@ -37,7 +37,7 @@ const createOrUpdateBudget = async (req, res) => {
   try {
     const { event_id, estimated_budget } = req.body;
 
-    // Get event and venue details
+    
     const event = await Event.findByPk(event_id);
     if (!event) return res.status(404).json({ error: "Event not found" });
 
@@ -45,10 +45,10 @@ const createOrUpdateBudget = async (req, res) => {
     if (!venue) return res.status(404).json({ error: "Venue not found" });
 
     const eventCost = parseFloat(event.price);
-    const venueCost = parseFloat(venue.price_per_hour) * 2; // assuming 2 hours
+    const venueCost = parseFloat(venue.price_per_hour) * 2; 
     const actual_expense = eventCost + venueCost;
 
-    // Save or update budget
+    
     const [budget, created] = await Budget.upsert({
       event_id,
       estimated_budget,

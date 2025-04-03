@@ -1,6 +1,6 @@
 const Event = require("../models/Event");
 const Venue = require("../models/Venue");
-const Booking = require("../models/Booking"); // <- add this
+const Booking = require("../models/Booking"); 
 
 exports.createEvent = async (req, res) => {
   try {
@@ -66,17 +66,17 @@ exports.deleteEvent = async (req, res) => {
       const event = await Event.findByPk(req.params.id);
       if (!event) return res.status(404).json({ error: "Event not found" });
   
-      // ✅ Step 1: Delete bookings related to this event
+      
       await Booking.destroy({ where: { event_id: event.id } });
   
-      // ✅ Step 2: Set venue back to 'Available'
+      
       const venueId = event.venue_id;
       await event.destroy();
       await Venue.update({ status: "Available" }, { where: { id: venueId } });
   
       res.json({ message: "Event and related bookings deleted. Venue set to Available." });
     } catch (error) {
-      console.error("❌ Error deleting event:", error);
+      console.error(" Error deleting event:", error);
       res.status(500).json({ error: error.message });
     }
   };
@@ -96,16 +96,16 @@ exports.assignVenueToEvent = async (req, res) => {
         return res.status(404).json({ error: "Event or Venue not found" });
       }
   
-      // ✅ Assign venue
+      
       event.venue_id = venueId;
       await event.save();
   
-      // ✅ Book venue
+      
       await Venue.update({ status: "Booked" }, { where: { id: venueId } });
   
       return res.json({ message: "Venue assigned and status updated", event });
     } catch (error) {
-      console.error("❌ Error assigning venue:", error);
+      console.error(" Error assigning venue:", error);
       return res.status(500).json({ error: error.message });
     }
   };

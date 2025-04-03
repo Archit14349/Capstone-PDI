@@ -34,7 +34,7 @@ public class AuthController {
         return ResponseEntity.ok("Hello, " + principal.getName() + "! You are authenticated.");
     }
 
-    // ✅ Return list of all registered users
+
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());

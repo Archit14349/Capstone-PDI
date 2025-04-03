@@ -2,7 +2,6 @@ const Booking = require("../models/Booking");
 const Budget = require("../models/Budget");
 const Event = require("../models/Event");
 
-// Get Dashboard Statistics
 const getDashboardStats = async (req, res) => {
   try {
     const totalBookings = await Booking.count();
@@ -17,7 +16,6 @@ const getDashboardStats = async (req, res) => {
   }
 };
 
-// Get All Bookings with Event Info
 const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.findAll({

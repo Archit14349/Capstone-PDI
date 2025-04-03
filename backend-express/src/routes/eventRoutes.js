@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const eventController = require("../controllers/eventController");
 
-// 🔥 Always put static paths first before dynamic ones
-router.put("/assign-venue", eventController.assignVenueToEvent); // ✅ this first!
+router.put("/assign-venue", eventController.assignVenueToEvent); 
 
 router.get("/", eventController.getAllEvents);
 router.get("/:id", eventController.getEventById);

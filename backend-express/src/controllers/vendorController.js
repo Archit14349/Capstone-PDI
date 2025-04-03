@@ -1,7 +1,7 @@
 const Vendor = require("../models/Vendor");
-const Event = require("../models/Event"); // ✅ needed for relation
+const Event = require("../models/Event"); 
 
-// ✅ Get all vendors including event name
+
 const getAllVendors = async (req, res) => {
   try {
     const vendors = await Vendor.findAll({

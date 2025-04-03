@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import './AuthModal.css'; // for basic styling (optional)
+import './AuthModal.css'; 
 
 export default function AuthModal({ onClose, onSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,7 +17,7 @@ export default function AuthModal({ onClose, onSuccess }) {
       const res = await axios.post(url, { username, password });
       if (isLogin && res.data.token) {
         localStorage.setItem('token', res.data.token);
-        onSuccess(); // close modal + continue to booking
+        onSuccess(); 
       } else if (!isLogin) {
         alert('Registered! Now log in.');
         setIsLogin(true);

@@ -52,7 +52,7 @@ const AttendeesPage = () => {
     <div style={styles.container}>
       <h1>Attendee Management</h1>
 
-      {/* Form Section */}
+      
       <form onSubmit={handleSubmit} style={styles.form}>
         <input type="text" placeholder="Name" value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
@@ -66,7 +66,7 @@ const AttendeesPage = () => {
         <button type="submit" style={styles.button}>Add Attendee</button>
       </form>
 
-      {/* Attendees List */}
+      
       <div style={styles.attendeeList}>
         {attendees.map(attendee => (
           <div key={attendee.id} style={styles.attendeeCard}>
@@ -77,7 +77,7 @@ const AttendeesPage = () => {
               </span>
             </div>
 
-            {/* Action Buttons */}
+            
             <div style={styles.actionContainer}>
               <button onClick={() => handleRegister(attendee.id, attendee.event_id)} style={styles.actionButton}>Register</button>
               <button onClick={() => handleMarkAttendance(attendee.id)} style={styles.actionButton}>Mark Attendance</button>
@@ -91,7 +91,7 @@ const AttendeesPage = () => {
   );
 };
 
-/** ✅ Updated Styles */
+
 const styles = {
   container: {
     maxWidth: "75%",

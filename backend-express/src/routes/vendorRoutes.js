@@ -13,7 +13,7 @@ router.get("/", getAllVendors);
 router.get("/:id", getVendorById);
 router.post("/", createVendor);
 router.put("/:id/assign", assignVendorToEvent);
-router.put("/:id/performance", updateVendorPerformance); // ⭐ new
+router.put("/:id/performance", updateVendorPerformance); 
 router.delete("/:id", deleteVendor);
 
 module.exports = router;

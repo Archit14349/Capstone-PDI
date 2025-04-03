@@ -14,6 +14,6 @@ router.get("/:id", getVenueById);
 router.post("/", createVenue);
 router.put("/:id", updateVenue);
 router.delete("/:id", deleteVenue);
-router.post("/:id/book", bookVenue); // POST for booking
+router.post("/:id/book", bookVenue); 
 
 module.exports = router;

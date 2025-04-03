@@ -1,6 +1,5 @@
 const Attendee = require("../models/Attendee");
 
-// ✅ Get All Attendees
 const getAllAttendees = async (req, res) => {
   try {
     const attendees = await Attendee.findAll();
@@ -10,7 +9,7 @@ const getAllAttendees = async (req, res) => {
   }
 };
 
-// ✅ Create Attendee
+
 const createAttendee = async (req, res) => {
   try {
     const { name, email, event_id } = req.body;
@@ -22,7 +21,6 @@ const createAttendee = async (req, res) => {
   }
 };
 
-// ✅ Register Attendee for Event
 const registerForEvent = async (req, res) => {
   try {
     const attendee = await Attendee.findByPk(req.params.id);
@@ -36,7 +34,7 @@ const registerForEvent = async (req, res) => {
   }
 };
 
-// ✅ Mark Attendance
+
 const markAttendance = async (req, res) => {
   try {
     const attendee = await Attendee.findByPk(req.params.id);
@@ -50,7 +48,7 @@ const markAttendance = async (req, res) => {
   }
 };
 
-// ✅ Send Reminder
+
 const sendReminder = async (req, res) => {
   try {
     const attendee = await Attendee.findByPk(req.params.id);
@@ -63,7 +61,7 @@ const sendReminder = async (req, res) => {
   }
 };
 
-// ✅ Collect Feedback
+
 const collectFeedback = async (req, res) => {
   try {
     const attendee = await Attendee.findByPk(req.params.id);

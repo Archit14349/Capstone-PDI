@@ -19,7 +19,7 @@ const Venue = sequelize.define("Venue", {
   timestamps: false
 });
 
-// ✅ Associate Event with Venue
+
 Venue.hasOne(Event, { foreignKey: "venue_id", as: "event" });
 
 module.exports = Venue;

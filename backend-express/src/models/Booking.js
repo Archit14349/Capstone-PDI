@@ -31,7 +31,7 @@ const Booking = sequelize.define("Booking", {
   },
 });
 
-// ✅ Associations
+
 Booking.belongsTo(Attendee, {
   foreignKey: "attendee_id",
   onDelete: "NO ACTION",

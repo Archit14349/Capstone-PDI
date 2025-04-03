@@ -45,7 +45,7 @@ const BookingPage = () => {
 
   return (
     <div style={styles.pageContainer}>
-      <h2 style={styles.title}>🎉 Explore & Book Events</h2>
+      <h2 style={styles.title}> Explore & Book Events</h2>
 
       <div style={styles.eventGrid}>
         {events.map(event => (

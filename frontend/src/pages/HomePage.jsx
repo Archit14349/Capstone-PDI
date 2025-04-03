@@ -138,7 +138,6 @@ const HomePage = () => {
   );
 };
 
-// ✅ Styles remain untouched
 const styles = {
   container: {
     width: "100%",
@@ -226,7 +225,7 @@ const styles = {
   }
 };
 
-// Modal styles
+
 const popupStyles = {
   overlay: {
     position: "fixed",

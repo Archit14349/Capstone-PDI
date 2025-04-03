@@ -147,8 +147,8 @@ const styles = {
     textAlign: "center",
     color: "#033E6B",
     fontSize: "2rem",
-    margin: "0.5rem 0 1rem 0", // tighter spacing
-    paddingTop: "0.5rem"   // optional: helps in tighter layout
+    margin: "0.5rem 0 1rem 0", 
+    paddingTop: "0.5rem"   
   },
   
   container: {
